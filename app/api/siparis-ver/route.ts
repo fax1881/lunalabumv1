@@ -6,7 +6,7 @@ import type { JwtPayload } from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 // JWT_SECRET environment variable'ı zorunlu
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required');
 }

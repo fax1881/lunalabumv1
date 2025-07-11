@@ -8,19 +8,19 @@ import dynamic from 'next/dynamic';
 import type { JwtPayload } from 'jsonwebtoken';
 const AdreslerBolumu = dynamic(() => import('../../components/AdreslerBolumu'), { ssr: false });
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required');
 }
 const prisma = new PrismaClient();
 
 type Order = {
-  id: string;
+  id: number;
   referans: string;
-  tarih: string;
+  tarih: Date;
   urun: string;
   adet: number;
-  kargo?: string;
+  kargo: string | null;
 };
 
 export default async function HesapPage() {
@@ -37,7 +37,7 @@ export default async function HesapPage() {
   }
 
   // Kullanıcıyı veritabanından çek
-  const user = await prisma.user.findUnique({ where: { id: userData.id as string } });
+  const user = await prisma.user.findUnique({ where: { id: Number(userData.id) } });
   if (!user) redirect('/giris');
 
   // Kullanıcının siparişlerini çek

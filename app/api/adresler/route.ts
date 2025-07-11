@@ -6,7 +6,7 @@ import type { JwtPayload } from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 // JWT_SECRET environment variable'ı zorunlu
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required');
 }
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
   const newAddress = await prisma.address.create({
     data: {
-      userId: userData.id as string,
+      userId: Number(userData.id),
       ad,
       adres,
       il,
@@ -79,7 +79,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'Adres ID gerekli.' }, { status: 400 });
   // Sadece kendi adresini silebilsin
   const address = await prisma.address.findUnique({ where: { id } });
-  if (!address || address.userId !== (userData.id as string)) {
+  if (!address || address.userId !== Number(userData.id)) {
     return NextResponse.json({ error: 'Adres bulunamadı veya yetkisiz.' }, { status: 403 });
   }
   await prisma.address.delete({ where: { id } });
