@@ -1,4 +1,4 @@
-// File: C:\Users\poyra\Documents\GitHub\lunaalbumdeneme\app\api\urunler\route.ts
+// File: C:\Users\poyra\Documents\GitHub\lunaalbu-mv3\app\api\urunler\route.ts
 import * as entry from '../../../../../app/api/urunler/route.js'
 import type { NextRequest } from 'next/server.js'
 

@@ -1,4 +1,4 @@
-// File: C:\Users\poyra\Documents\GitHub\lunaalbumdeneme\app\page.tsx
+// File: C:\Users\poyra\Documents\GitHub\lunaalbu-mv3\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

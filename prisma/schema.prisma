@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -23,6 +22,8 @@ model Order {
   referans     String
   odeme        Boolean  @default(false)
   kargo        String?
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -33,6 +34,7 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
   addresses Address[]
+  orders    Order[]
 }
 
 model Address {
