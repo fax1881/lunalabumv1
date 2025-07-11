@@ -13,6 +13,8 @@ export default function CheckoutPage() {
     payment: 'Kapıda Ödeme',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -25,10 +27,32 @@ export default function CheckoutPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setSubmitted(true);
-    localStorage.removeItem('cart');
+    setError('');
+    setLoading(true);
+    try {
+      // Sepet ürünlerini tek bir string olarak kaydediyoruz (dilersen yapıyı geliştirebiliriz)
+      const urun = cart.map(item => `${item.ebat} x${item.adet}${item.not ? ' - ' + item.not : ''}`).join(', ');
+      const adet = cart.reduce((sum, item) => sum + (item.adet || 1), 0);
+      const adres = `${form.name}, ${form.phone}, ${form.email}, ${form.address}`;
+      const res = await fetch('/api/siparis-ver', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urun, adet, adres })
+      });
+      if (res.ok) {
+        setSubmitted(true);
+        localStorage.removeItem('cart');
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Sipariş oluşturulamadı.');
+      }
+    } catch {
+      setError('Sunucu hatası. Lütfen tekrar deneyin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -67,7 +91,10 @@ export default function CheckoutPage() {
             <option>Kapıda Ödeme</option>
           </select>
         </div>
-        <button type="submit" className="btn-primary w-full py-3 text-lg">Siparişi Onayla</button>
+        {error && <div className="text-red-500 mb-2">{error}</div>}
+        <button type="submit" className="btn-primary w-full py-3 text-lg" disabled={loading}>
+          {loading ? 'Sipariş Gönderiliyor...' : 'Siparişi Onayla'}
+        </button>
       </form>
       <div className="mt-10">
         <h2 className="text-xl font-semibold mb-4">Sipariş Özeti</h2>

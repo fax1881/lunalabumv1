@@ -6,6 +6,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://furkanbxy.com'), // kendi domaininle değiştir
   title: 'FurkanBxy - Profesyonel Fotoğraf Baskı Hizmetleri',
   description: 'FurkanBxy ile kaliteli fotoğraf baskı, fotokitap, canvas tablo, pola kart ve daha fazlası. Orijinal Fujifilm kağıdı, aynı gün kargo.',
   keywords: 'fotoğraf baskı, fotokitap, canvas tablo, pola kart, foto magnet, çerçeveli fotoğraf, foto takvim',
@@ -35,11 +36,13 @@ export const metadata: Metadata = {
     description: 'Kaliteli fotoğraf baskı, fotokitap, canvas tablo ve daha fazlası',
     images: ['/og-image.jpg'],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+  // viewport metadata'dan kaldırıldı
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({

@@ -15,10 +15,17 @@ import {
   X,
   ChevronDown
 } from 'lucide-react'
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    router.push('/giris');
+  };
 
   const menuItems = [
     {
@@ -158,21 +165,30 @@ const Header = () => {
               <span>Siparişlerim</span>
             </Link>
             {isLoggedIn ? (
-              <Link href="/hesap" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600 transition-colors">
+              <Link href="/hesap" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600 transition-colors font-medium">
                 <User size={20} />
                 <span>Hesabım</span>
               </Link>
             ) : (
-              <Link href="/kayit" className="btn-primary">
+              <Link href="/kayit" className="flex items-center space-x-1 text-gray-700 hover:text-yellow-400 transition-colors font-medium">
                 <UserPlus size={16} />
                 <span>Kayıt</span>
               </Link>
             )}
             {!isLoggedIn && (
-              <Link href="/giris" className="btn-outline">
+              <Link href="/giris" className="flex items-center space-x-1 text-gray-700 hover:text-yellow-400 transition-colors font-medium">
                 <LogIn size={16} />
                 <span>Giriş</span>
               </Link>
+            )}
+            {isLoggedIn && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-semibold transition"
+              >
+                <LogIn size={18} />
+                Çıkış Yap
+              </button>
             )}
           </div>
 
@@ -246,6 +262,15 @@ const Header = () => {
                   <LogIn size={20} />
                   <span>Giriş</span>
                 </Link>
+              )}
+              {isLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 py-2 text-yellow-400 border border-yellow-400 rounded hover:bg-yellow-400 hover:text-black transition-colors w-full justify-center"
+                >
+                  <LogIn size={20} />
+                  <span>Çıkış Yap</span>
+                </button>
               )}
             </div>
           </div>

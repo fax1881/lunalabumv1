@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
+import { useRouter } from "next/navigation";
 
 const BOYUTLAR = [
   { label: "9x13 cm", value: "9x13" },
@@ -17,6 +18,7 @@ const EditorPage = () => {
   const [adetler, setAdetler] = useState<number[]>([]);
   const [boyut, setBoyut] = useState<string>(BOYUTLAR[1].value); // default 10x15
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -46,6 +48,21 @@ const EditorPage = () => {
   const handleRemove = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx));
     setAdetler((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleTasarimKaydet = () => {
+    if (images.length === 0) return;
+    const tasarimlar = JSON.parse(localStorage.getItem("tasarimlar") || "[]");
+    images.forEach((img, idx) => {
+      tasarimlar.push({ image: img, name: `Tasarım ${tasarimlar.length + 1}` });
+    });
+    localStorage.setItem("tasarimlar", JSON.stringify(tasarimlar));
+    alert("Tasarım(lar) kaydedildi!");
+  };
+
+  const handleSipariseEkle = () => {
+    // Demo: Sipariş oluşturma sayfasına yönlendir
+    router.push("/fotograf-baskisi/siparis");
   };
 
   return (
@@ -117,12 +134,22 @@ const EditorPage = () => {
             </div>
           ))}
         </div>
-        <button
-          className="mt-8 bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-medium shadow"
-          disabled={images.length === 0}
-        >
-          Sepete Ekle
-        </button>
+        <div className="flex gap-4 mt-8">
+          <button
+            className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-medium shadow"
+            disabled={images.length === 0}
+            onClick={handleTasarimKaydet}
+          >
+            Tasarımı Kaydet
+          </button>
+          <button
+            className="bg-secondary-600 hover:bg-secondary-700 text-white px-8 py-3 rounded-lg text-lg font-medium shadow"
+            disabled={images.length === 0}
+            onClick={handleSipariseEkle}
+          >
+            Siparişe Ekle
+          </button>
+        </div>
       </main>
       <Footer />
     </div>

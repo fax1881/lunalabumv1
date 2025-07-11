@@ -10,17 +10,34 @@ const KayitPage = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Demo: Herhangi bir bilgiyle kayıt başarılı
+    setError("");
+    setLoading(true);
     if (email && password && name) {
-      // Burada gerçek kayıt işlemi olacak
-      localStorage.setItem("user", JSON.stringify({ email, name }));
-      router.push("/hesap");
+      try {
+        const res = await fetch("/api/kayit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+        if (res.ok) {
+          router.push("/hesap");
+        } else {
+          const data = await res.json();
+          setError(data.error || "Kayıt başarısız.");
+        }
+      } catch {
+        setError("Sunucu hatası. Lütfen tekrar deneyin.");
+      } finally {
+        setLoading(false);
+      }
     } else {
       setError("Tüm alanları doldurunuz.");
+      setLoading(false);
     }
   };
 
@@ -61,7 +78,9 @@ const KayitPage = () => {
             />
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded font-medium">Kayıt Ol</button>
+          <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded font-medium" disabled={loading}>
+            {loading ? "Kayıt Olunuyor..." : "Kayıt Ol"}
+          </button>
           <div className="mt-4 text-center">
             Zaten hesabınız var mı? <a href="/giris" className="text-primary-600 hover:underline">Giriş Yap</a>
           </div>

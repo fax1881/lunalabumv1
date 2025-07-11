@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE `Order` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `tarih` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `urun` VARCHAR(191) NOT NULL,
+    `adet` INTEGER NOT NULL,
+    `adres` VARCHAR(191) NOT NULL,
+    `referans` VARCHAR(191) NOT NULL,
+    `odeme` BOOLEAN NOT NULL DEFAULT false,
+    `kargo` VARCHAR(191) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

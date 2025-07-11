@@ -9,17 +9,34 @@ const GirisPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Demo: Herhangi bir e-posta/şifre ile giriş başarılı
+    setError("");
+    setLoading(true);
     if (email && password) {
-      // Burada gerçek auth işlemi olacak
-      localStorage.setItem("user", JSON.stringify({ email }));
-      router.push("/hesap");
+      try {
+        const res = await fetch("/api/giris", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        if (res.ok) {
+          router.push("/hesap");
+        } else {
+          const data = await res.json();
+          setError(data.error || "Giriş başarısız.");
+        }
+      } catch {
+        setError("Sunucu hatası. Lütfen tekrar deneyin.");
+      } finally {
+        setLoading(false);
+      }
     } else {
       setError("E-posta ve şifre giriniz.");
+      setLoading(false);
     }
   };
 
@@ -50,7 +67,9 @@ const GirisPage = () => {
             />
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded font-medium">Giriş Yap</button>
+          <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded font-medium" disabled={loading}>
+            {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+          </button>
           <div className="mt-4 text-center">
             Hesabınız yok mu? <a href="/kayit" className="text-primary-600 hover:underline">Kayıt Ol</a>
           </div>
